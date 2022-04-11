@@ -135,7 +135,7 @@ def get_terminaltables(stats, title):
         'Язык программирования',
         'Вакансий найдено',
         'Вакансий обработано',
-        'Средняя зарплата,'
+        'Средняя зарплата'
     ]
     table = [head]
     for language in stats:
