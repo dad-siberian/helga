@@ -34,14 +34,14 @@ def get_vacancies_hh(language):
     return vacancies
 
 
-def predict_rub_salary_hh(vacancy):
-    if vacancy['currency'] == 'RUR':
-        if vacancy['from'] and vacancy['to']:
-            return predict_salary(vacancy['from'], vacancy['to'])
-        elif vacancy['from']:
-            return vacancy['from'] * 1.2
+def predict_rub_salary_hh(currency, payment_from, payment_to):
+    if currency == 'RUR':
+        if payment_from and payment_to:
+            return predict_salary(payment_from, payment_to)
+        elif payment_from:
+            return payment_from * 1.2
         else:
-            return vacancy['to'] * 0.8
+            return payment_to * 0.8
 
 
 def get_salary_statistics_hh(language):
@@ -49,7 +49,10 @@ def get_salary_statistics_hh(language):
     salaries = []
     vacancies = get_vacancies_hh(language)
     for vacancy in vacancies:
-        salary = predict_rub_salary_hh(vacancy['salary'])
+        currency = vacancy['salary']['currency']
+        payment_from = vacancy['salary']['from']
+        payment_to = vacancy['salary']['to']
+        salary = predict_rub_salary_hh(currency, payment_from, payment_to)
         if salary:
             salaries.append(salary)
     salaries_stats['vacancies_found'] = len(vacancies)
@@ -87,19 +90,19 @@ def get_vacancies_sj(language):
     return vacancies
 
 
-def predict_rub_salary_sj(vacancy):
-    if vacancy['currency'] == 'rub':
-        is_payment_from = bool(vacancy['payment_from'])
-        is_payment_to = bool(vacancy['payment_to'])
+def predict_rub_salary_sj(currency, payment_from, payment_to):
+    if currency == 'rub':
+        is_payment_from = bool(payment_from)
+        is_payment_to = bool(payment_to)
         if is_payment_from and is_payment_to:
             return predict_salary(
-                vacancy['payment_from'],
-                vacancy['payment_to']
+                payment_from,
+                payment_to
             )
         elif is_payment_from:
-            return vacancy['payment_from'] * 1.2
+            return payment_from * 1.2
         elif is_payment_to:
-            return vacancy['payment_to'] * 0.8
+            return payment_to * 0.8
 
 
 def get_salary_statistics_sj(language):
@@ -107,7 +110,10 @@ def get_salary_statistics_sj(language):
     salaries = []
     vacancies = get_vacancies_sj(language)
     for vacancy in vacancies:
-        salary = predict_rub_salary_sj(vacancy)
+        currency = vacancy['currency']
+        payment_from = vacancy['payment_from']
+        payment_to = vacancy['payment_to']
+        salary = predict_rub_salary_sj(currency, payment_from, payment_to)
         if salary:
             salaries.append(salary)
     salaries_stats['vacancies_found'] = len(vacancies)
