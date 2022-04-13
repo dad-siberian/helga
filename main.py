@@ -63,7 +63,7 @@ def get_table_statistics_hh():
     stats = {}
     for language in LANGUAGES:
         stats[language] = get_salary_statistics_hh(language)
-    get_terminaltables(stats, title)
+    print_terminaltables(stats, title)
 
 
 def get_vacancies_sj(language, secret_key):
@@ -122,14 +122,14 @@ def get_table_statistics_sj():
     stats = {}
     for language in LANGUAGES:
         stats[language] = get_salary_statistics_sj(language, secret_key)
-    get_terminaltables(stats, title)
+    print_terminaltables(stats, title)
 
 
 def predict_salary(salary_from, salary_to):
     return (salary_from + salary_to) / 2
 
 
-def get_terminaltables(stats, title):
+def print_terminaltables(stats, title):
     title = title
     head = [
         'Язык программирования',
