@@ -115,9 +115,7 @@ def get_salary_statistics_sj(language, secret_key):
     return salaries_stats
 
 
-def get_table_statistics_sj():
-    load_dotenv()
-    secret_key = os.getenv("SUPERJOB_SECRET_KEY")
+def get_table_statistics_sj(secret_key):
     title = 'SuperJob Moscow'
     stats = {}
     for language in LANGUAGES:
@@ -150,8 +148,10 @@ def print_terminaltables(stats, title):
 
 
 def main():
+    load_dotenv()
+    secret_key = os.getenv("SUPERJOB_SECRET_KEY")
     get_table_statistics_hh()
-    get_table_statistics_sj()
+    get_table_statistics_sj(secret_key)
 
 
 if __name__ == '__main__':
