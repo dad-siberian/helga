@@ -34,16 +34,6 @@ def get_vacancies_hh(language):
     return vacancies
 
 
-def predict_rub_salary_hh(currency, payment_from, payment_to):
-    if currency == 'RUR':
-        if payment_from and payment_to:
-            return predict_salary(payment_from, payment_to)
-        elif payment_from:
-            return payment_from * 1.2
-        else:
-            return payment_to * 0.8
-
-
 def get_salary_statistics_hh(language):
     salaries_stats = {}
     salaries = []
@@ -52,7 +42,7 @@ def get_salary_statistics_hh(language):
         currency = vacancy['salary']['currency']
         payment_from = vacancy['salary']['from']
         payment_to = vacancy['salary']['to']
-        salary = predict_rub_salary_hh(currency, payment_from, payment_to)
+        salary = predict_rub_salary(currency, payment_from, payment_to)
         if salary:
             salaries.append(salary)
     salaries_stats['vacancies_found'] = len(vacancies)
@@ -90,21 +80,6 @@ def get_vacancies_sj(language):
     return vacancies
 
 
-def predict_rub_salary_sj(currency, payment_from, payment_to):
-    if currency == 'rub':
-        is_payment_from = bool(payment_from)
-        is_payment_to = bool(payment_to)
-        if is_payment_from and is_payment_to:
-            return predict_salary(
-                payment_from,
-                payment_to
-            )
-        elif is_payment_from:
-            return payment_from * 1.2
-        elif is_payment_to:
-            return payment_to * 0.8
-
-
 def get_salary_statistics_sj(language):
     salaries_stats = {}
     salaries = []
@@ -113,7 +88,7 @@ def get_salary_statistics_sj(language):
         currency = vacancy['currency']
         payment_from = vacancy['payment_from']
         payment_to = vacancy['payment_to']
-        salary = predict_rub_salary_sj(currency, payment_from, payment_to)
+        salary = predict_rub_salary(currency, payment_from, payment_to)
         if salary:
             salaries.append(salary)
     salaries_stats['vacancies_found'] = len(vacancies)
@@ -130,8 +105,17 @@ def get_table_statistics_sj():
     print_terminaltables(stats, title)
 
 
-def predict_salary(salary_from, salary_to):
-    return (salary_from + salary_to) / 2
+def predict_rub_salary(currency, payment_from, payment_to):
+    if currency not in ['rub', 'RUR']:
+        return None
+    is_payment_from = bool(payment_from)
+    is_payment_to = bool(payment_to)
+    if is_payment_from and is_payment_to:
+        return (payment_from + payment_to) / 2
+    elif is_payment_from:
+        return payment_from * 1.2
+    elif is_payment_to:
+        return payment_to * 0.8
 
 
 def print_terminaltables(stats, title):
