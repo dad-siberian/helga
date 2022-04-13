@@ -66,7 +66,8 @@ def get_table_statistics_hh():
     print_terminaltables(stats, title)
 
 
-def get_vacancies_sj(language, secret_key):
+def get_vacancies_sj(language):
+    secret_key = os.getenv("SUPERJOB_SECRET_KEY")
     vacancies = []
     url = 'https://api.superjob.ru/2.0/vacancies/'
     headers = {'X-Api-App-Id': secret_key}
@@ -101,10 +102,10 @@ def predict_rub_salary_sj(vacancy):
             return vacancy['payment_to'] * 0.8
 
 
-def get_salary_statistics_sj(language, secret_key):
+def get_salary_statistics_sj(language):
     salaries_stats = {}
     salaries = []
-    vacancies = get_vacancies_sj(language, secret_key)
+    vacancies = get_vacancies_sj(language)
     for vacancy in vacancies:
         salary = predict_rub_salary_sj(vacancy)
         if salary:
@@ -115,11 +116,11 @@ def get_salary_statistics_sj(language, secret_key):
     return salaries_stats
 
 
-def get_table_statistics_sj(secret_key):
+def get_table_statistics_sj():
     title = 'SuperJob Moscow'
     stats = {}
     for language in LANGUAGES:
-        stats[language] = get_salary_statistics_sj(language, secret_key)
+        stats[language] = get_salary_statistics_sj(language)
     print_terminaltables(stats, title)
 
 
@@ -149,9 +150,8 @@ def print_terminaltables(stats, title):
 
 def main():
     load_dotenv()
-    secret_key = os.getenv("SUPERJOB_SECRET_KEY")
     get_table_statistics_hh()
-    get_table_statistics_sj(secret_key)
+    get_table_statistics_sj()
 
 
 if __name__ == '__main__':
