@@ -8,7 +8,7 @@ from terminaltables import AsciiTable
 
 LANGUAGES = [
     'JavaScript', 'Python', 'Java', 'TypeScript',
-    'C#', 'PHP', 'C++', 'Kotlin', 'Swift', 'Go',
+    'C#', 'PHP', 'C++', 'Kotlin', 'Swift', 'Go', 'Cobol',
 ]
 
 
@@ -47,7 +47,10 @@ def get_salary_statistics_hh(language):
             salaries.append(salary)
     salaries_stats['vacancies_found'] = len(vacancies)
     salaries_stats['vacancies_processed'] = len(salaries)
-    salaries_stats['average_salary'] = int(statistics.mean(salaries))
+    try:
+        salaries_stats['average_salary'] = int(statistics.mean(salaries))
+    except statistics.StatisticsError:
+        salaries_stats['average_salary'] = 'not found'
     return salaries_stats
 
 
@@ -93,7 +96,10 @@ def get_salary_statistics_sj(language):
             salaries.append(salary)
     salaries_stats['vacancies_found'] = len(vacancies)
     salaries_stats['vacancies_processed'] = len(salaries)
-    salaries_stats['average_salary'] = int(statistics.mean(salaries))
+    try:
+        salaries_stats['average_salary'] = int(statistics.mean(salaries))
+    except statistics.StatisticsError:
+        salaries_stats['average_salary'] = 'not found'
     return salaries_stats
 
 
