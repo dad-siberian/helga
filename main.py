@@ -34,10 +34,9 @@ def get_vacancies_hh(language):
     return vacancies
 
 
-def get_salary_statistics_hh(language):
+def get_salary_statistics_hh(vacancies):
     salaries_stats = {}
     salaries = []
-    vacancies = get_vacancies_hh(language)
     for vacancy in vacancies:
         currency = vacancy['salary']['currency']
         payment_from = vacancy['salary']['from']
@@ -54,15 +53,7 @@ def get_salary_statistics_hh(language):
     return salaries_stats
 
 
-def get_table_statistics_hh():
-    title = 'HeadHunter Moscow'
-    stats = {}
-    for language in LANGUAGES:
-        stats[language] = get_salary_statistics_hh(language)
-    print_terminaltables(stats, title)
-
-
-def get_vacancies_sj(language):
+def get_vacancies_sj(secret_key, language):
     vacancies = []
     url = 'https://api.superjob.ru/2.0/vacancies/'
     headers = {'X-Api-App-Id': secret_key}
@@ -82,10 +73,9 @@ def get_vacancies_sj(language):
     return vacancies
 
 
-def get_salary_statistics_sj(language):
+def get_salary_statistics_sj(vacancies):
     salaries_stats = {}
     salaries = []
-    vacancies = get_vacancies_sj(language)
     for vacancy in vacancies:
         currency = vacancy['currency']
         payment_from = vacancy['payment_from']
@@ -100,14 +90,6 @@ def get_salary_statistics_sj(language):
     except statistics.StatisticsError:
         salaries_stats['average_salary'] = 'not found'
     return salaries_stats
-
-
-def get_table_statistics_sj():
-    title = 'SuperJob Moscow'
-    stats = {}
-    for language in LANGUAGES:
-        stats[language] = get_salary_statistics_sj(language)
-    print_terminaltables(stats, title)
 
 
 def predict_rub_salary(currency, payment_from, payment_to):
@@ -142,11 +124,18 @@ def print_terminaltables(stats, title):
 
 
 def main():
-    get_table_statistics_hh()
-    get_table_statistics_sj()
+    load_dotenv()
+    secret_key = os.getenv("SUPERJOB_SECRET_KEY")
+    hh_stats = {}
+    sj_stats = {}
+    for language in LANGUAGES:
+        hh_vacancies = get_vacancies_hh(language)
+        hh_stats[language] = get_salary_statistics_hh(hh_vacancies)
+        sj_vacancies = get_vacancies_sj(secret_key, language)
+        sj_stats[language] = get_salary_statistics_sj(sj_vacancies)
+    print_terminaltables(hh_stats, 'HeadHunter Moscow')
+    print_terminaltables(sj_stats, 'SuperJob Moscow')
 
 
 if __name__ == '__main__':
-    load_dotenv()
-    secret_key = os.getenv("SUPERJOB_SECRET_KEY")
     main()
